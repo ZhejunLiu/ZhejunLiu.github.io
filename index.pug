@@ -1,0 +1,39 @@
+.scenery
+	.stars
+		- for(i=0; i<100; i++)
+			.star
+	.planet.planet1
+	.planet.planet2
+	.planet.planet3
+	.girl
+		.head
+		.body
+		.legs
+	.title
+		h1
+			span 4
+			.square
+				.light.light1
+				.light.light2
+				.light.light3
+				.light.light4
+				.shadow.shadow1
+				.shadow.shadow2
+				ul.stairs1
+					- for(i=0; i<12; i++)
+						li
+				ul.stairs2
+					- for(i=0; i<11; i++)
+						li
+				ul.stairs3
+					- for(i=0; i<10; i++)
+						li
+				ul.stairs4
+					- for(i=0; i<11; i++)
+						li
+			span 4
+	.message
+		h2 Oops! Looks like you got lost
+	
+	.action
+		button Take me back
