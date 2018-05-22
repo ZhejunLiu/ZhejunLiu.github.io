@@ -10,10 +10,12 @@ $(document).ready(function(e) {
 	}
    console.clear();
    var commandlist = [ /*Can be populated with various methods*/
-      ["/help", "Show commands"],
-      ["/list", "List all pages on the website"],
-      ["/nav &lt;location&gt;", "Navigate to location"],
-	  ["/clear", "Clear the console"],
+      ["help", "Show commands"],
+      ["list", "List all pages on the website"],
+      ["nav &lt;location&gt;", "Navigate to location"],
+	  ["clear", "Clear the console"],
+	  ["PowOfTwo &lt;N&gt;","Check if int &lt;N&gt; is the nubmer of two"],
+	  ["timer &lt;t&gt;","Set a timer for &lt;t&gt; seconds"]
    ];
    var previouscommands = [];
    var currentcommand = 0;
@@ -23,8 +25,8 @@ $(document).ready(function(e) {
    
    
    var pages = [ /*Can be populated with various methods*/
-      ["index", "Welcome to ZhejunLiu.net","someIntro" ],
-      ["about", "About ZhejunLiu.net", "Some ABout"],
+      ["index", "Welcome to ZhejunLiu.net","This command line page is an interesting place to test some functionalities"],
+      ["about", "About ZhejunLiu.net", "ZhejunLiu.net is the personal website of Zhejun Liu."],
 	  ["connect", "Connect with Zhejun",
 	  "[mailto:ZhejunLiu001@gmail.com](Email ZhejunLiu001@gmail.com)",
 	  "[^https://www.linkedin.com/in/zhejun-liu/](LinkedIn) ",
@@ -64,7 +66,7 @@ $(document).ready(function(e) {
       log("Website", "");
       log("Website", "");
 	  urlvars();
-      log("Client", "For help say '/help'");
+      log("Client", "For help say 'help'");
 	  setInterval(favicon,500);
    }
 
@@ -276,7 +278,6 @@ $(document).ready(function(e) {
 
    function cmd(command, words, word) {
       switch (word[0]) {
-         case "/help":
          case "help":
             for (var i = 0; i < commandlist.length; i++) {
                output = commandlist[i][0] + " : " + commandlist[i][1];
@@ -284,10 +285,10 @@ $(document).ready(function(e) {
                log("Client", output);
             }
             break;
-         case "/clear":
+         case "clear":
             $(".stream").text("");
             break;
-         case "/nav":
+         case "nav":
             if ($.inArray(word[1], pageindex) >= 0) {
                currentpage = word[1];
                log("Website", "You are now in " + currentpage);
@@ -296,17 +297,61 @@ $(document).ready(function(e) {
                log("Client", "'" + word[1] + "' does not exist.");
             }
             break;
-         case "/list":
+         case "list":
             $.each(pageindex, function(id, content) {
                log("Client", "> " + content);
             });
             break;
+			
+		case "HelloWorld":
+			log("Client","HelloWorld!");
+			break;
+			
+		case "PowOfTwo":
+			if (!isNaN(Number(word[1]))){
+               targetNum = Number(word[1]);
+			   
+			   result = targetNum > 0 && !(targetNum & (targetNum - 1));
+			   
+			   if(result){
+				   log("Client", "The number is the power of 2");
+			   }
+			   else{
+				   log("Client", "The number is not the power of 2");
+			   }
+            } else {
+               log("Client", "Please enter a valid number");
+            }
+			break;
+		case "timer":
+			if (!isNaN(Number(word[1]))){
+               targetNum = Number(word[1]);
+			   setTimer(targetNum);
+			   log("Client", "A timer of " + word[1] +" seconds has been set. The system will notify you when the time is up");
+            }
+			else {
+               log("Client", "Please enter a valid number");
+            }
+			break;
+			
          default:
             output = "Unrecognised command '" + word[0] + "'.";
             log("Client", output);
       }
    }
-
+	
+	var timeoutID;
+	
+   function setTimer(iSec){
+		timeoutID = window.setTimeout(sendAlert, iSec * 1000);
+   }
+   
+   function sendAlert(){
+		log("Client", "Time is up!");
+		window.alert("Times up!")
+   }
+   
+   
    function loadpage(i) {
       $.each(pages[i], function(id, content) {
          if (content != pageindex[i]) {
