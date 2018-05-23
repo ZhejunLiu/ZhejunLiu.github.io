@@ -4,6 +4,7 @@ Forked from https://codepen.io/z-/pen/eJNgWO
 */
 $(document).ready(function(e) {
    var faviconnumber = 1;
+   var timerRunning = 0;
 	function favicon() {
 		favicon = favicon == 1 ? 2 : 1;
 		$('.favicon').attr('href','favicon' + favicon + ".png");
@@ -15,7 +16,8 @@ $(document).ready(function(e) {
       ["nav &lt;location&gt;", "Navigate to location"],
 	  ["clear", "Clear the console"],
 	  ["PowOfTwo &lt;N&gt;","Check if int &lt;N&gt; is the nubmer of two"],
-	  ["timer &lt;t&gt;","Set a timer for &lt;t&gt; seconds"]
+	  ["timer &lt;t&gt;","Set a timer for &lt;t&gt; seconds"],
+	  ["timer check","check the remaining time on the timer"],
    ];
    var previouscommands = [];
    var currentcommand = 0;
@@ -324,13 +326,23 @@ $(document).ready(function(e) {
             }
 			break;
 		case "timer":
+			if(timerRunning == 1 && word[1] != "check"){
+				log("Client", "A timer is already running");
+				break;
+			}
 			if (!isNaN(Number(word[1]))){
                targetNum = Number(word[1]);
 			   setTimer(targetNum);
 			   log("Client", "A timer of " + word[1] +" seconds has been set. The system will notify you when the time is up");
             }
 			else {
-               log("Client", "Please enter a valid number");
+				if(word[1] == "check")
+					if(timerRunning ==1)
+						checkTimer();
+					else
+						log("Client", "Please set a timer first");
+				else
+					log("Client", "Please enter a valid number");
             }
 			break;
 			
@@ -341,13 +353,20 @@ $(document).ready(function(e) {
    }
 	
 	var timeoutID;
+	var timerStartMS = 0;
+	var timerRemainMS = 0;
+	var timerLengthS = 0;
 	
    function setTimer(iSec){
+		timerLengthS = iSec;
+		timerStartMS = (new Date()).getTime();
+		timerRunning = 1;
 		timeoutID = window.setTimeout(sendAlert, iSec * 1000);
    }
    
    function sendAlert(){
 		log("Client", "Time is up!");
+		timerRunning = 0;
 		window.alert("Times up!")
    }
    
@@ -361,6 +380,12 @@ $(document).ready(function(e) {
    }
    var loginreturn = false;
 
+   function checkTimer(){
+		timerRemainMS = timerLengthS - ( (new Date()).getTime() - timerStartMS ) / 1000 ;
+		log("Website", "The timer has " + timerRemainMS.toString()+"s remain.");
+   }
+   
+   
    function loginemptyreturn() {
       //log("Client", "ER2");
       if (!loginreturn) {
